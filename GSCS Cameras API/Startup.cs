@@ -32,13 +32,13 @@ namespace GSCS_Cameras_API
             services.AddControllers();
             services.AddDbContext<ApplicationDbContext>(
                 optionsBuilder =>
-                    optionsBuilder.UseSqlServer(
-                        Configuration.GetConnectionString("DefaultConnection")
+                    optionsBuilder.UseSqlite(
+                        Configuration.GetConnectionString("SQLiteConnection")
                         )
                     );
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "GSCS_Cameras_API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "GSCS Cameras API", Version = "v1" });
             });
         }
 

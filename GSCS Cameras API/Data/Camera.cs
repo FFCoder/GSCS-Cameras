@@ -11,6 +11,8 @@ namespace GSCS_Cameras_API.Data
         public string Name { get; set; }
         [Required]
         public CameraModel Model { get; set; }
+        [Required(ErrorMessage="A Camera must be associated with a school")]
+        public School School { get; set; }
         [Required]
         public string IPAddress { get; set; }
         public string Username { get; set; }

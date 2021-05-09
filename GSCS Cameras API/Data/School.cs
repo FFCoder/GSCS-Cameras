@@ -12,5 +12,6 @@ namespace GSCS_Cameras_API.Data
         public int ID { get; set; }
         [Required(ErrorMessage ="School Name is Required")]
         public string Name { get; set; }
+        public IEnumerable<Camera> Cameras { get; set; }
     }
 }
