@@ -26,7 +26,10 @@ namespace GSCS_Cameras_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Camera>>> GetCameras()
         {
-            return await _context.Cameras.ToListAsync();
+            return await _context.Cameras
+                .Include(c => c.Model)
+                .Include(c => c.School)
+                .ToListAsync();
         }
 
         // GET: api/Cameras/5
@@ -39,6 +42,8 @@ namespace GSCS_Cameras_API.Controllers
             }
 
             var camera = await _context.Cameras
+                .Include(c => c.Model)
+                .Include(c => c.School)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (camera == null)
             {
@@ -49,10 +54,31 @@ namespace GSCS_Cameras_API.Controllers
         }
 
        [HttpPost]
-        public async Task<ActionResult<Camera>> PostCamera(Camera camera)
+        public async Task<ActionResult<Camera>> PostCamera([FromBody] Camera camera)
         {
+            var SchoolID = camera.School.ID;
+            if (_context.Schools.Any(s => s.ID == SchoolID)) 
+            {
+                var existingSchool = await _context.Schools.FirstOrDefaultAsync(s => s.ID == SchoolID);
+                camera.School = existingSchool;
+            }
+
+            var ModelID = camera.Model.Id;
+            if (_context.Models.Any(m => m.Id == ModelID))
+            {
+                var existingModel = await _context.Models.FirstOrDefaultAsync(m => m.Id == ModelID);
+                camera.Model = existingModel;
+            }
+            if (camera.Username == null) {
+                camera.Username = camera.Model.DefaultUsername;
+            }
+            if (camera.Password == null) {
+                camera.Password = camera.Model.DefaultPassword;
+            }
             _context.Cameras.Add(camera);
             await _context.SaveChangesAsync();
+
+
 
             return CreatedAtAction("GetCamera", new { id = camera.ID }, camera);
         }

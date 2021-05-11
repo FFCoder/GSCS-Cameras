@@ -29,13 +29,19 @@ namespace GSCS_Cameras_API
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddDbContext<ApplicationDbContext>(
                 optionsBuilder =>
                     optionsBuilder.UseSqlite(
                         Configuration.GetConnectionString("SQLiteConnection")
                         )
                     );
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter= true;
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "GSCS Cameras API", Version = "v1" });
@@ -58,10 +64,12 @@ namespace GSCS_Cameras_API
 
             app.UseAuthorization();
 
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
         }
     }
 }

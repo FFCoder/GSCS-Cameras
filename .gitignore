@@ -364,3 +364,8 @@ FodyWeavers.xsd
 
 # VSCode 
 .vscode
+
+
+# Mac Specific
+DS_Store
+.DS_Store

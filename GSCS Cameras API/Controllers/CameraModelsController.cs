@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,51 +11,47 @@ namespace GSCS_Cameras_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SchoolsController : ControllerBase
+    public class CameraModelsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public SchoolsController(ApplicationDbContext context)
+        public CameraModelsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Schools
+        // GET: api/CameraModels
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<School>>> GetSchools()
+        public async Task<ActionResult<IEnumerable<CameraModel>>> GetModels()
         {
-            return await _context.Schools
-                .Include(s => s.Cameras)
-                .ToListAsync();
+            return await _context.Models.ToListAsync();
         }
 
-        // GET: api/Schools/5
+        // GET: api/CameraModels/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<School>> GetSchool(int id)
+        public async Task<ActionResult<CameraModel>> GetCameraModel(int id)
         {
-            var school = await _context.Schools
-            .Include(s => s.Cameras)
-            .FirstOrDefaultAsync(s => s.ID == id);
+            var cameraModel = await _context.Models.FindAsync(id);
 
-            if (school == null)
+            if (cameraModel == null)
             {
                 return NotFound();
             }
 
-            return school;
+            return cameraModel;
         }
 
-        // PUT: api/Schools/5
+        // PUT: api/CameraModels/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSchool(int id, School school)
+        public async Task<IActionResult> PutCameraModel(int id, CameraModel cameraModel)
         {
-            if (id != school.ID)
+            if (id != cameraModel.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(school).State = EntityState.Modified;
+            _context.Entry(cameraModel).State = EntityState.Modified;
 
             try
             {
@@ -63,7 +59,7 @@ namespace GSCS_Cameras_API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!SchoolExists(id))
+                if (!CameraModelExists(id))
                 {
                     return NotFound();
                 }
@@ -76,36 +72,36 @@ namespace GSCS_Cameras_API.Controllers
             return NoContent();
         }
 
-        // POST: api/Schools
+        // POST: api/CameraModels
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<School>> PostSchool(School school)
+        public async Task<ActionResult<CameraModel>> PostCameraModel(CameraModel cameraModel)
         {
-            _context.Schools.Add(school);
+            _context.Models.Add(cameraModel);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSchool", new { id = school.ID }, school);
+            return CreatedAtAction("GetCameraModel", new { id = cameraModel.Id }, cameraModel);
         }
 
-        // DELETE: api/Schools/5
+        // DELETE: api/CameraModels/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSchool(int id)
+        public async Task<IActionResult> DeleteCameraModel(int id)
         {
-            var school = await _context.Schools.FindAsync(id);
-            if (school == null)
+            var cameraModel = await _context.Models.FindAsync(id);
+            if (cameraModel == null)
             {
                 return NotFound();
             }
 
-            _context.Schools.Remove(school);
+            _context.Models.Remove(cameraModel);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool SchoolExists(int id)
+        private bool CameraModelExists(int id)
         {
-            return _context.Schools.Any(e => e.ID == id);
+            return _context.Models.Any(e => e.Id == id);
         }
     }
 }
